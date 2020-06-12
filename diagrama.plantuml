@@ -15,10 +15,6 @@ GeneradorSugerencias --> "*" Usuario
 
 
 abstract class ServicioMeteorologico{
-    -subscriptoresAlertas: List<Usuario>
-    +subscribirse(usuario)
-    +desuscribirse(usuario)
-    -postearAlertas(alertas)
     +List<Alerta> obtenerAlertasActuales(String direccion)
 }
 
@@ -27,9 +23,21 @@ ServicioMeteorologico <|.. ServicioMeteorologicoAccuWeather
 ServicioMeteorologico ..> Alerta
 
 class ServicioMeteorologicoAccuWeather{
-    -Alerta textoAAlerta(alertaEnTexto)
+   
     +List<Alerta> obtenerAlertasActuales(String direccion)
 }
+
+class AlertadorMeteorologico{
+    -subscriptoresAlertas: List<Usuario>
+    +subscribirse(usuario)
+    +desuscribirse(usuario)
+    +revisarAlertas(direccion)
+    -postearAlertas(alertas)
+    -Alerta textoAAlerta(alertaEnTexto)
+    -servicioMeteorologico
+}
+
+AlertadorMeteorologico --> ServicioMeteorologico
 
 enum Alerta{
     GRANIZO
@@ -65,11 +73,13 @@ AccionAlertaMeteorologica <|.. RecalculoSugerencia
 AccionAlertaMeteorologica <|.. NotificarGranizo
 
 class Usuario{
+    -direcicon: String
+    -direccionMail: String
     -List<AccionAlertaMeteorologica> accionesAlertaMeteorologica
     +recibirAlerta(alerta)
     +generarSugerenciaDiara()
 }
-Usuario ..>"constructor" ServicioMeteorologico
+Usuario ..>"constructor" AlertadorMeteorologico
 Usuario --> "*" AccionAlertaMeteorologica
 Usuario ..> Alerta
 @enduml

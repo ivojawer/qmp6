@@ -7,13 +7,6 @@ class MailSender{
     +send(address,message)
 }
 
-class GeneradorSugerencias{
-    -subscriptoresSugerencias: List<Usuario>
-    +subscribir(usuario)
-}
-GeneradorSugerencias --> "*" Usuario
-
-
 abstract class ServicioMeteorologico{
     +List<Alerta> obtenerAlertasActuales(String direccion)
 }

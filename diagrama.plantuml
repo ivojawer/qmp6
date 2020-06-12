@@ -1,0 +1,75 @@
+@startuml
+class NotificationService{
+    +notify(text)
+}
+
+class MailSender{
+    +send(address,message)
+}
+
+class GeneradorSugerencias{
+    -subscriptoresSugerencias: List<Usuario>
+    +subscribir(usuario)
+}
+GeneradorSugerencias --> "*" Usuario
+
+
+abstract class ServicioMeteorologico{
+    -subscriptoresAlertas: List<Usuario>
+    +subscribirse(usuario)
+    +desuscribirse(usuario)
+    -postearAlertas(alertas)
+    +List<Alerta> obtenerAlertasActuales(String direccion)
+}
+
+ServicioMeteorologico <|.. ServicioMeteorologicoAccuWeather
+
+ServicioMeteorologico ..> Alerta
+
+class ServicioMeteorologicoAccuWeather{
+    -Alerta textoAAlerta(alertaEnTexto)
+    +List<Alerta> obtenerAlertasActuales(String direccion)
+}
+
+enum Alerta{
+    GRANIZO
+    LLUVIA
+    TORMENTA
+    +descripcion()
+}
+
+interface AccionAlertaMeteorologica{
+    +alertar(usuario,alerta)
+}
+
+class MandarMail{
+    -mailSender: MailSender
+    +alertar(usuario,alerta)
+}
+
+MandarMail --> MailSender
+
+class RecalculoSugerencia{
+    +alertar(usuario,alerta)
+}
+
+class NotificarGranizo{
+    -notificationService: NotificationService
+    +alertar(usuario,alerta)
+}
+
+NotificarGranizo --> NotificationService 
+AccionAlertaMeteorologica ..> Alerta
+AccionAlertaMeteorologica <|.. MandarMail
+AccionAlertaMeteorologica <|.. RecalculoSugerencia
+AccionAlertaMeteorologica <|.. NotificarGranizo
+
+class Usuario{
+    -List<AccionAlertaMeteorologica> accionesAlertaMeteorologica
+    +recibirAlerta(alerta)
+    +generarSugerenciaDiara()
+}
+Usuario ..>"constructor" ServicioMeteorologico
+Usuario --> "*" AccionAlertaMeteorologica
+Usuario ..> Alerta
+@enduml
